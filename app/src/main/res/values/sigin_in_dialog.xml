@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <style name="SiginInDialog" parent="@android:style/Theme.Dialog">
+            <item name="android:windowTitleStyle">@style/SiginInDialogTitle</item>
+        </style>
+        <style name="SiginInDialogTitle" parent="@android:style/TextAppearance.DialogWindowTitle">
+            <item name="android:gravity">center_horizontal</item>
+        </style>
+</resources>
