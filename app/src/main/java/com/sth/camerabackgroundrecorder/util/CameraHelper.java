@@ -73,7 +73,7 @@ public class CameraHelper {
                         long time = System.currentTimeMillis() - movieRecorder.videoFileBean.getStarttime();// 已经录制的时长
                         intent.putExtra(Assist.TIMER, Tools.getTimeString(time));
                         context.sendBroadcast(intent);
-                        if (time >= /*AppPara.getInstance().getLoopDuration() * 60*/ 30* 1000) {
+                        if (time >= AppPara.getInstance().getLoopDuration() * 60* 1000) {
                             // 停止录像然后再开启
                             Log.i("cai", "timer is running");
                             takePicture();
@@ -115,7 +115,7 @@ public class CameraHelper {
             Log.i("cai","open camera failed:"+e.getMessage());
             mCamera = null;
             openCameraSuccess = false;
-            //Toast.makeText(mContext, "打开相机失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "打开相机失败", Toast.LENGTH_SHORT).show();
         }
         //设置参数
         if (mCamera != null) {
@@ -333,18 +333,20 @@ public class CameraHelper {
                 mediarecorder = new MediaRecorder();// 创建mediarecorder对象
             }
             videoFileBean = new VideoFileBean();
+            // Step 1: Unlock and set camera to MediaRecorder
             if (mCamera != null)
                 mCamera.unlock();
             mediarecorder.setCamera(mCamera);
+
             //if (AppPara.getInstance().isRECsound()) {
-            mediarecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);// 声音
+            //mediarecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);// 声音
             //}
 
+            // Step 2: Set sources
+            mediarecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
             mediarecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-            //mediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            //mediarecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);// 声音
-            //mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
             // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
             int width = AppPara.getInstance().getVideo_Resolution_Ratio().getWidth();
             int height = AppPara.getInstance().getVideo_Resolution_Ratio().getHeight();
@@ -355,10 +357,9 @@ public class CameraHelper {
                 mediarecorder.setOrientationHint(90);
             }else{
                 mediarecorder.setOrientationHint(270);
-
             }
             mediarecorder.setVideoEncodingBitRate(profile.videoBitRate);
-//            mediarecorder.setPreviewDisplay(Preview.this.getHolder().getSurface());
+            //mediarecorder.setPreviewDisplay(Preview.this.getHolder().getSurface());
 
             long time = System.currentTimeMillis();
             String filename = Tools.getFileName(time);
@@ -375,7 +376,8 @@ public class CameraHelper {
                 mediarecorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
                     @Override
                     public void onError(MediaRecorder mr, int what, int extra) {
-                        releaseMediaRecorder();
+                        Log.e("cai","record video error what="+what+" extra="+extra);
+                        //releaseMediaRecorder();
                     }
                 });
 
@@ -391,8 +393,6 @@ public class CameraHelper {
                 e.printStackTrace();
                 releaseMediaRecorder();
             }
-            // 开始录制 发生正在录制的广播 用来播放动画
-            //Tools.sendBroadcast(mContext, Assist.START_RECORD);
 
         }
 
@@ -400,10 +400,23 @@ public class CameraHelper {
         @Override
         public void stopRecording() {
             if (mediarecorder != null && Assist.isRecording) {
-                mediarecorder.stop();
-                mediarecorder.release();
-                // mediarecorder.reset();
-                mediarecorder = null;// stopRecording
+//                try{
+
+                    mediarecorder.stop();
+                    releaseMediaRecorder();
+/*                }catch (RuntimeException e){
+                    //delete file
+                    try {
+                        FileUtils.forceDelete(new File(videoFileBean.getPath()));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }finally {*/
+
+                    //releaseMediaRecorder();
+                    //mediarecorder.release();
+                   // mediarecorder = null;// stopRecording
+//                }
                 videoFileBean.setEndtime(System.currentTimeMillis());
 
                 String thumbpath = Assist.THUMBFILE_STORAGE_DIRECTORY + MD5.getMD5String(videoFileBean.getName());
@@ -424,7 +437,6 @@ public class CameraHelper {
                 Assist.isRecording = false;
                 System.gc();
             }
-            //Tools.sendBroadcast(mContext, Assist.STOP_RECORD);
         }
 
         // 停止录像，可能还需要继续录像

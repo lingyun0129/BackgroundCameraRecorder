@@ -67,7 +67,7 @@ public final class Tools {
         appPara.setRECsound(dPreference.getBoolean("RECsound", true));
         appPara.setTempFolderSize(dPreference.getInt("tempFolderSize", 300));
         appPara.setCurrentCameraId(dPreference.getInt("cameraId",0));
-        appPara.setSavePath(dPreference.getString("savePath",Assist.BASE_STORAGE_DIRECTORY));
+        appPara.setSavePath(dPreference.getString("savePath",Assist.VIDEOFILE_STORAGE_DIRECTORY));
         appPara.getVideo_Resolution_Ratio().setWidth(dPreference.getInt("video_Resolution_Ratio.width", 1280));
         appPara.getVideo_Resolution_Ratio().setHeight(dPreference.getInt("video_Resolution_Ratio.height", 720));
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
