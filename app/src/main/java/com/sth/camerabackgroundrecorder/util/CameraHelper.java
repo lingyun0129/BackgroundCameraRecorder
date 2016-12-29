@@ -73,7 +73,7 @@ public class CameraHelper {
                         long time = System.currentTimeMillis() - movieRecorder.videoFileBean.getStarttime();// 已经录制的时长
                         intent.putExtra(Assist.TIMER, Tools.getTimeString(time));
                         context.sendBroadcast(intent);
-                        if (time >= AppPara.getInstance().getLoopDuration() * 60* 1000) {
+                        if (time >= /*AppPara.getInstance().getLoopDuration() * 60*/10* 1000) {
                             // 停止录像然后再开启
                             Log.i("cai", "timer is running");
                             takePicture();
@@ -353,11 +353,12 @@ public class CameraHelper {
             mediarecorder.setVideoSize(width, height);
             CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
             mediarecorder.setVideoFrameRate(profile.videoFrameRate);
-            if (AppPara.getInstance().getCurrentCameraId() == 0) {
+/*            if (AppPara.getInstance().getCurrentCameraId() == 0) {
                 mediarecorder.setOrientationHint(90);
             }else{
                 mediarecorder.setOrientationHint(270);
-            }
+            }*/
+            mediarecorder.setOrientationHint(AppPara.getInstance().getRotationAngle());
             mediarecorder.setVideoEncodingBitRate(profile.videoBitRate);
             //mediarecorder.setPreviewDisplay(Preview.this.getHolder().getSurface());
 

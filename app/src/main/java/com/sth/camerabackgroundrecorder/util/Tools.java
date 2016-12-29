@@ -68,6 +68,7 @@ public final class Tools {
         appPara.setTempFolderSize(dPreference.getInt("tempFolderSize", 300));
         appPara.setCurrentCameraId(dPreference.getInt("cameraId",0));
         appPara.setSavePath(dPreference.getString("savePath",Assist.VIDEOFILE_STORAGE_DIRECTORY));
+        appPara.setRotationAngle(dPreference.getInt("rotationAngle",90));
         appPara.getVideo_Resolution_Ratio().setWidth(dPreference.getInt("video_Resolution_Ratio.width", 1280));
         appPara.getVideo_Resolution_Ratio().setHeight(dPreference.getInt("video_Resolution_Ratio.height", 720));
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -103,6 +104,7 @@ public final class Tools {
         dPreference.putIntAndCommit("cameraId",appPara.getCurrentCameraId());
 
         dPreference.putStringAndCommit("savePath",appPara.getSavePath());
+        dPreference.putIntAndCommit("rotationAngle",appPara.getRotationAngle());
         dPreference.putIntAndCommit("video_Resolution_Ratio.width", appPara.getVideo_Resolution_Ratio().getWidth());
         dPreference.putIntAndCommit("video_Resolution_Ratio.height", appPara.getVideo_Resolution_Ratio().getHeight());
 

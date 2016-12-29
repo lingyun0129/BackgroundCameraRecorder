@@ -162,8 +162,8 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
                     }
                     if (continue_Record)
                         makeVideo();
-                    //myNotification = new MyNotification(mContext);
-                    //myNotification.showNotification();
+                    myNotification = new MyNotification(mContext);
+                    myNotification.showNotification();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

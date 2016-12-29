@@ -60,6 +60,10 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
         map.put("k", "文件存储路径:");
         map.put("v", AppPara.getInstance().getSavePath());
         lists.add(map);
+        map = new HashMap<String, String>();
+        map.put("k", "竖屏摄像头视频旋转:");
+        map.put("v", AppPara.getInstance().getRotationAngle()+"°");
+        lists.add(map);
     }
 
     private void initView(View view) {
@@ -137,6 +141,24 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
                 startActivityForResult(intent, EX_FILE_PICKER_RESULT);
             }
                 break;
+            case 4:
+            {
+                String[] data = {"0°","90°", "180°", "270°"};
+                final int[] angle = {0,90, 180, 270};
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("旋转角度")
+                        .setItems(data, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                AppPara.getInstance().setRotationAngle(angle[which]);
+                                Tools.saveAppPara(AppPara.getInstance(),getActivity());
+                                initVideoData();
+                                adapter.notifyDataSetChanged();
+                            }
+                        }).create()
+                        .show();
+                break;
+            }
             default:
                 break;
         }

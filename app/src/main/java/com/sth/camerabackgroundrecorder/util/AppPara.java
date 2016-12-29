@@ -28,6 +28,23 @@ public class AppPara {
 
     private String flashmode = Camera.Parameters.FLASH_MODE_OFF;// 这个状态不保存到文件中
 
+    //当前摄像头
+    private int currentCameraId;
+
+    //文件存储路径
+    private String savePath;
+
+    //视频旋转的度数
+    private int rotationAngle;
+
+    public int getRotationAngle() {
+        return rotationAngle;
+    }
+
+    public void setRotationAngle(int rotationAngle) {
+        this.rotationAngle = rotationAngle;
+    }
+
     public int getCurrentCameraId() {
         return currentCameraId;
     }
@@ -36,9 +53,6 @@ public class AppPara {
         this.currentCameraId = currentCameraId;
     }
 
-    //当前摄像头
-    private int currentCameraId;
-
     public String getSavePath() {
         return savePath;
     }
@@ -46,9 +60,6 @@ public class AppPara {
     public void setSavePath(String savePath) {
         this.savePath = savePath;
     }
-
-    //文件存储路径
-    private String savePath;
 
     private AppPara() {
         // 私有构造
