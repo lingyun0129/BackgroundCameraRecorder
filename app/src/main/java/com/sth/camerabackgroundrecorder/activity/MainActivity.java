@@ -10,14 +10,17 @@ import android.widget.Toast;
 
 import com.sth.camerabackgroundrecorder.R;
 import com.sth.camerabackgroundrecorder.service.BackgroundWorkService;
+import com.sth.camerabackgroundrecorder.util.AppPara;
 import com.sth.camerabackgroundrecorder.util.Assist;
 import com.sth.camerabackgroundrecorder.util.CameraHelper;
+import com.sth.camerabackgroundrecorder.util.LineEditText;
 import com.sth.camerabackgroundrecorder.util.Tools;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     private Button start_recording, stop_recording;
     private CameraHelper mCamera = null;
     private boolean mCameraOpenSuccess = false;
+    private LineEditText et_password=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +38,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             start_recording.setEnabled(true);
             stop_recording.setEnabled(false);
         }
-        if (!Assist.isRecording) {
+/*        if (!Assist.isRecording) {
             mCamera = new CameraHelper(this);
             mCameraOpenSuccess = mCamera.openCamera();
 
             Log.i("cai", "MainActivity ---->open camera " + mCameraOpenSuccess);
-        }
+        }*/
+        et_password=(LineEditText)findViewById(R.id.et_password);
+        et_password.setText(AppPara.getInstance().getPassword());
     }
 
     @Override
@@ -52,13 +57,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     finish();
                     return;
                 }
-                if (!mCameraOpenSuccess) {
+/*                if (!mCameraOpenSuccess) {
                     Toast.makeText(this, "相机打开失败!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (mCamera != null) {
                     mCamera.closeCamera();
-                }
+                }*/
                 Intent service = new Intent(MainActivity.this, BackgroundWorkService.class);
                 startService(service);
                 //Assist.isTake_Picture = false;
@@ -79,6 +84,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("cai","save password");
+        AppPara.getInstance().setPassword(et_password.getText().toString());
+        Tools.saveAppPara(AppPara.getInstance(),this);
         Log.i("cai", "MainActivity ---->close camera");
         if (mCamera != null)
             mCamera.closeCamera();
