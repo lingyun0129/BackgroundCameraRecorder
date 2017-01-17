@@ -73,7 +73,7 @@ public class CameraHelper {
                         long time = System.currentTimeMillis() - movieRecorder.videoFileBean.getStarttime();// 已经录制的时长
                         intent.putExtra(Assist.TIMER, Tools.getTimeString(time));
                         context.sendBroadcast(intent);
-                        if (time >= /*AppPara.getInstance().getLoopDuration() * 60*/10* 1000) {
+                        if (time >= AppPara.getInstance().getLoopDuration()*60*1000) {
                             // 停止录像然后再开启
                             Log.i("cai", "timer is running");
                             takePicture();
@@ -219,6 +219,7 @@ public class CameraHelper {
                             //movieRecorder.startRecording();
                             startRecording();
                         } else {
+                            Toast.makeText(mContext,"内存容量不足,停止录像",Toast.LENGTH_LONG).show();
                             return;
                         }
 
@@ -323,11 +324,15 @@ public class CameraHelper {
             if (Assist.videoDBHelper == null)
                 Log.i("cailingyun", "videoDBHelper is null");
             if (Tools.getFreeMemory() < 100 /*|| Assist.videoDBHelper.getTempVideoSize() >= AppPara.getInstance().getTempFolderSize()*/) {
-                delTempVideo();
+/*                delTempVideo();
                 if (Tools.getFreeMemory() < 100) {
                     Tools.sendBroadcast(mContext, Assist.TOAST, "内存卡容量不足");
                     return;
-                }
+                }*/
+                Log.i("cai","show low mememory");
+                Tools.sendBroadcast(mContext, Assist.TOAST, "内存卡容量不足");
+                Tools.sendBroadcast(mContext,Assist.CANCEL);
+                return;
             }
             if (mediarecorder == null) {
                 mediarecorder = new MediaRecorder();// 创建mediarecorder对象

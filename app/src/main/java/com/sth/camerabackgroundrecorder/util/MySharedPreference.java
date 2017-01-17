@@ -13,6 +13,7 @@ import java.util.Map;
 public class MySharedPreference {
     private static final String PREFERENCE_NAME = "preference.db";
     public static final String  KEY_REGISTERED="registered";
+    public static final String KEY_PASSWORD="password";
     private SharedPreferences mPreference;
     public MySharedPreference(Context context) {
         mPreference=context.getSharedPreferences(PREFERENCE_NAME,context.MODE_PRIVATE);

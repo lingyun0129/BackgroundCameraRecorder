@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -37,6 +38,8 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
     private TextureView mTextureView;
     //Windows manager dynamic
     private WindowManager mWindowManager;
+
+    private PowerManager.WakeLock wakeLock=null;
     //Inflater
     public LayoutInflater minflater;
 
@@ -64,13 +67,14 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
         filter.addAction(Assist.TOAST);
         filter.addAction(Assist.CANCEL);
         registerReceiver(mReceiver, filter);
-       Tools.sendBroadcast(this, Assist.FOREGROUND_TO_BACKGROUND, true);
+        acquireWakeLock();
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("cai","BackGroundService onStartCommand ---->called");
+        Tools.sendBroadcast(this, Assist.FOREGROUND_TO_BACKGROUND, true);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -84,7 +88,7 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
         if (myNotification != null && myNotification.isShowing()) {
             myNotification.cancelNotification();
         }
-
+        releaseWakeLock();
     }
     /*
 * Create surface and initial variables
@@ -126,6 +130,7 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
                 String text = intent.getExtras().getString(Assist.TOAST);
                 //MyToast.show(context, text);
                 Toast.makeText(mContext,text,Toast.LENGTH_SHORT).show();
+                Log.i("cai","show Toast:"+text);
             }else if (Assist.CANCEL.equals(action)){
                 BackgroundWorkService.this.stopVideo();
                 stopSelf();
@@ -162,8 +167,8 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
                     }
                     if (continue_Record)
                         makeVideo();
-                    myNotification = new MyNotification(mContext);
-                    myNotification.showNotification();
+                    //myNotification = new MyNotification(mContext);
+                    //myNotification.showNotification();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -231,4 +236,20 @@ public class BackgroundWorkService extends Service implements BackgroundMakeVide
 
     }
 
+    private void acquireWakeLock() {
+        if (wakeLock ==null) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
+            wakeLock.acquire();
+        }
+    }
+
+
+    private void releaseWakeLock() {
+        if (wakeLock !=null&& wakeLock.isHeld()) {
+            wakeLock.release();
+            wakeLock =null;
+        }
+
+    }
 }

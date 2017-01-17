@@ -19,6 +19,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/fragment_set_video"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="软件登录密码:"/>
+        <com.sth.camerabackgroundrecorder.util.LineEditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_password"
+            android:inputType="number"
+            android:background="@null"
+            android:textColor="#0090ff"
+            android:maxLength="6"
+
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/fragment_set_video"
         android:layout_marginTop="80dp"
         android:gravity="center_horizontal"
         >

@@ -10,6 +10,8 @@ public class AppPara {
     private static AppPara appPara = null;
     // video分辨率
     private Video_Resolution_Ratio video_Resolution_Ratio = new Video_Resolution_Ratio();
+    private Video_Resolution_Ratio front_ratio=new Video_Resolution_Ratio();//前摄
+    private Video_Resolution_Ratio back_ratio=new Video_Resolution_Ratio();//后摄
     // image分辨率
     private Image_Resolution_Ratio image_Resolution_Ratio = new Image_Resolution_Ratio();
     // 曝光度
@@ -36,6 +38,17 @@ public class AppPara {
 
     //视频旋转的度数
     private int rotationAngle;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    //密码
+    private String password;
 
     public int getRotationAngle() {
         return rotationAngle;
@@ -81,7 +94,12 @@ public class AppPara {
     }
 
     public Video_Resolution_Ratio getVideo_Resolution_Ratio() {
-        return video_Resolution_Ratio;
+        if (currentCameraId==0){
+            return back_ratio;
+        }else{
+            return front_ratio;
+        }
+        //return video_Resolution_Ratio;
     }
 
     //
@@ -145,6 +163,22 @@ public class AppPara {
 
     public void setRECsound(boolean rECsound) {
         RECsound = rECsound;
+    }
+
+    public Video_Resolution_Ratio getBack_ratio() {
+        return back_ratio;
+    }
+
+    public void setBack_ratio(Video_Resolution_Ratio back_ratio) {
+        this.back_ratio = back_ratio;
+    }
+
+    public Video_Resolution_Ratio getFront_ratio() {
+        return front_ratio;
+    }
+
+    public void setFront_ratio(Video_Resolution_Ratio front_ratio) {
+        this.front_ratio = front_ratio;
     }
 
     public class Video_Resolution_Ratio {

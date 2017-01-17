@@ -18,9 +18,16 @@ public class SplashActivity extends Activity {
         Tools.initAppPara(this);
 
         boolean registered=new MySharedPreference(this).getBoolean(MySharedPreference.KEY_REGISTERED,false);
+        String password=new MySharedPreference(this).getString(MySharedPreference.KEY_PASSWORD,"");
         Intent intent=new Intent();
         if (registered){
-            intent.setClass(this,MainActivity.class);
+            //如果没有设置密码，直接进入;否则进入输入密码对话窗口
+            if (password.equals("")) {
+                intent.setClass(this, MainActivity.class);
+            }else
+            {
+                intent.setClass(this,InputPasswordDialogActivity.class);
+            }
         }
         else{
             intent.setClass(this,LoginActivity.class);

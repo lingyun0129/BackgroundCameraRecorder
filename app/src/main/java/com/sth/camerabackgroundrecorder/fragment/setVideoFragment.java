@@ -7,6 +7,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 
 import com.sth.camerabackgroundrecorder.R;
 import com.sth.camerabackgroundrecorder.util.AppPara;
+import com.sth.camerabackgroundrecorder.util.Assist;
+import com.sth.camerabackgroundrecorder.util.CameraHelper;
 import com.sth.camerabackgroundrecorder.util.CameraSupportedParameters;
 import com.sth.camerabackgroundrecorder.util.Tools;
 
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import ru.bartwell.exfilepicker.ExFilePicker;
 import ru.bartwell.exfilepicker.ExFilePickerParcelObject;
 
@@ -34,6 +38,7 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
     List<Map<String, String>> lists = new ArrayList<Map<String, String>>();// 存放adapter的数据
     HashMap<String, String> map = new HashMap<String, String>();
     private static final int EX_FILE_PICKER_RESULT = 0;
+    private Camera mCamera = null;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,11 +55,17 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
         lists.add(map);
         map = new HashMap<String, String>();
         map.put("k", "视频分辨率:");
-        map.put("v", AppPara.getInstance().getVideo_Resolution_Ratio().toString());
+        if (AppPara.getInstance().getCurrentCameraId()==0){
+
+            map.put("v", AppPara.getInstance().getBack_ratio().toString());
+        }else
+        {
+            map.put("v", AppPara.getInstance().getFront_ratio().toString());
+        }
         lists.add(map);
         map = new HashMap<String, String>();
         map.put("k", "摄像头:");
-        map.put("v", AppPara.getInstance().getCurrentCameraId()==1 ? "前" : "后");
+        map.put("v", AppPara.getInstance().getCurrentCameraId() == 1 ? "前" : "后");
         lists.add(map);
         map = new HashMap<String, String>();
         map.put("k", "文件存储路径:");
@@ -62,7 +73,7 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
         lists.add(map);
         map = new HashMap<String, String>();
         map.put("k", "竖屏摄像头视频旋转:");
-        map.put("v", AppPara.getInstance().getRotationAngle()+"°");
+        map.put("v", AppPara.getInstance().getRotationAngle() + "°");
         lists.add(map);
     }
 
@@ -72,9 +83,19 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
     }
-
+    public void releaseCamera(){
+        if (mCamera!=null){
+            Log.i("cai","releaseCamera----->");
+            mCamera.release();
+            mCamera=null;
+        }
+    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (Assist.isRecording){
+            Toast.makeText(getActivity(),"正在录像",Toast.LENGTH_LONG).show();
+            return ;
+        }
         switch (position) {
             //循环录像时间
             case 0: {
@@ -86,7 +107,7 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 AppPara.getInstance().setLoopDuration(time[which]);
-                                Tools.saveAppPara(AppPara.getInstance(),getActivity());
+                                Tools.saveAppPara(AppPara.getInstance(), getActivity());
                                 initVideoData();
                                 adapter.notifyDataSetChanged();
                             }
@@ -96,6 +117,23 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
             break;
             case 1: {
                 // 视频分辨率
+                if (!Assist.isRecording) {
+                    try {
+                        if (mCamera != null) {
+                            releaseCamera();
+                            mCamera=null;
+                        }
+                        if (mCamera == null) {
+                            mCamera = Camera.open(AppPara.getInstance().getCurrentCameraId());
+                            CameraSupportedParameters.init(mCamera);
+                        }
+                    } catch (RuntimeException e) {
+                        Log.i("cai", "open camera failed:" + e.getMessage());
+                        mCamera = null;
+                        Toast.makeText(getActivity(), "打开相机失败", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
                 final List<Camera.Size> videoSizes = CameraSupportedParameters.getInstance().getVideoSizes();
                 String[] data_fbl = new String[videoSizes.size()];
                 for (int i = 0; i < videoSizes.size(); i++) {
@@ -104,54 +142,80 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle("设置视频分辨率").setItems(data_fbl, new DialogInterface.OnClickListener() {//
                     @Override
                     public void onClick(DialogInterface dialog, int which) {//
-                        AppPara.getInstance().getVideo_Resolution_Ratio().setWidth(videoSizes.get(which).width);
-                        AppPara.getInstance().getVideo_Resolution_Ratio().setHeight(videoSizes.get(which).height);
+                        //AppPara.getInstance().getVideo_Resolution_Ratio().setWidth(videoSizes.get(which).width);
+                        //AppPara.getInstance().getVideo_Resolution_Ratio().setHeight(videoSizes.get(which).height);
+                        if (AppPara.getInstance().getCurrentCameraId()==0){
+                            AppPara.getInstance().getBack_ratio().setWidth(videoSizes.get(which).width);
+                            AppPara.getInstance().getBack_ratio().setHeight(videoSizes.get(which).height);
+
+                        }else {
+                            AppPara.getInstance().getFront_ratio().setWidth(videoSizes.get(which).width);
+                            AppPara.getInstance().getFront_ratio().setHeight(videoSizes.get(which).height);
+
+                        }
                         Tools.saveAppPara(AppPara.getInstance(), getActivity());
                         initVideoData();
                         adapter.notifyDataSetChanged();
                     }
                 });
                 AlertDialog alertDialog = builder.create();
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                       releaseCamera();
+                    }
+                });
                 alertDialog.show();
             }
             break;
             case 2: {
                 //摄像头
                 String[] cameraId = new String[]{"后", "前"};
-                new AlertDialog.Builder(getActivity())
+
+                AlertDialog dialog = new AlertDialog.Builder(getActivity())
                         .setTitle("摄像头选择")
                         .setItems(cameraId, new DialogInterface.OnClickListener() {//
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {//
-                        AppPara.getInstance().setCurrentCameraId(which);
-                        Tools.saveAppPara(AppPara.getInstance(), getActivity());
-                        initVideoData();
-                        adapter.notifyDataSetChanged();
-                    }
-                }).create()
-                        .show();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {//
+                                if (which!=AppPara.getInstance().getCurrentCameraId()){
+                                    //重新获取支持的分辨率
 
+                                }
+                                AppPara.getInstance().setCurrentCameraId(which);
+                                Tools.saveAppPara(AppPara.getInstance(), getActivity());
+
+                                initVideoData();
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        }).create();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+
+                    }
+                });
+                dialog.show();
             }
             break;
             //设置存储路径
-            case 3:{
+            case 3: {
                 Intent intent = new Intent(getActivity(), ru.bartwell.exfilepicker.ExFilePickerActivity.class);
                 intent.putExtra(ExFilePicker.SET_ONLY_ONE_ITEM, true);
                 intent.putExtra(ExFilePicker.SET_CHOICE_TYPE, ExFilePicker.CHOICE_TYPE_DIRECTORIES);
                 startActivityForResult(intent, EX_FILE_PICKER_RESULT);
             }
-                break;
-            case 4:
-            {
-                String[] data = {"0°","90°", "180°", "270°"};
-                final int[] angle = {0,90, 180, 270};
+            break;
+            case 4: {
+                String[] data = {"0°", "90°", "180°", "270°"};
+                final int[] angle = {0, 90, 180, 270};
                 new AlertDialog.Builder(getActivity())
                         .setTitle("旋转角度")
                         .setItems(data, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 AppPara.getInstance().setRotationAngle(angle[which]);
-                                Tools.saveAppPara(AppPara.getInstance(),getActivity());
+                                Tools.saveAppPara(AppPara.getInstance(), getActivity());
                                 initVideoData();
                                 adapter.notifyDataSetChanged();
                             }
@@ -176,7 +240,7 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
                         buffer.append(object.names.get(i));
                         if (i < object.count - 1) buffer.append(", ");
                     }
-                    String savePath=object.path+buffer.toString();
+                    String savePath = object.path + buffer.toString();
                     AppPara.getInstance().setSavePath(savePath);
                     Tools.saveAppPara(AppPara.getInstance(), getActivity());
                     initVideoData();
@@ -230,5 +294,11 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
 
     class ViewHolder {
         TextView item_name, item_value;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releaseCamera();
     }
 }

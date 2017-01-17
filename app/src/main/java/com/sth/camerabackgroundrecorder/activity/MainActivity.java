@@ -56,7 +56,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(this, "正在后台录像!", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
+                }else if(Tools.getFreeMemory()<100){
+                    Toast.makeText(MainActivity.this,"内存容量不足",Toast.LENGTH_LONG).show();
+                    return;
                 }
+
 /*                if (!mCameraOpenSuccess) {
                     Toast.makeText(this, "相机打开失败!", Toast.LENGTH_SHORT).show();
                     return;

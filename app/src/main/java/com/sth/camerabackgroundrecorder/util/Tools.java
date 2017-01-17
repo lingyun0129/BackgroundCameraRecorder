@@ -69,8 +69,16 @@ public final class Tools {
         appPara.setCurrentCameraId(dPreference.getInt("cameraId",0));
         appPara.setSavePath(dPreference.getString("savePath",Assist.VIDEOFILE_STORAGE_DIRECTORY));
         appPara.setRotationAngle(dPreference.getInt("rotationAngle",90));
+        appPara.setPassword(dPreference.getString("password",""));
         appPara.getVideo_Resolution_Ratio().setWidth(dPreference.getInt("video_Resolution_Ratio.width", 1280));
         appPara.getVideo_Resolution_Ratio().setHeight(dPreference.getInt("video_Resolution_Ratio.height", 720));
+        //back camera ratio
+        appPara.getBack_ratio().setWidth(dPreference.getInt("back_ratio.width", 1280));
+        appPara.getBack_ratio().setHeight(dPreference.getInt("back_ratio.height", 720));
+        //front camera ratio
+        appPara.getFront_ratio().setWidth(dPreference.getInt("front_ratio.width", 1280));
+        appPara.getFront_ratio().setHeight(dPreference.getInt("front_ratio.height", 720));
+
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(dm);
@@ -105,8 +113,16 @@ public final class Tools {
 
         dPreference.putStringAndCommit("savePath",appPara.getSavePath());
         dPreference.putIntAndCommit("rotationAngle",appPara.getRotationAngle());
+        dPreference.putStringAndCommit("password",appPara.getPassword());
         dPreference.putIntAndCommit("video_Resolution_Ratio.width", appPara.getVideo_Resolution_Ratio().getWidth());
         dPreference.putIntAndCommit("video_Resolution_Ratio.height", appPara.getVideo_Resolution_Ratio().getHeight());
+        //back camera ratio
+        dPreference.putIntAndCommit("back_ratio.width", appPara.getBack_ratio().getWidth());
+        dPreference.putIntAndCommit("back_ratio.height", appPara.getBack_ratio().getHeight());
+        //front camera ratio
+        dPreference.putIntAndCommit("front_ratio.width", appPara.getFront_ratio().getWidth());
+        dPreference.putIntAndCommit("front_ratio.height", appPara.getFront_ratio().getHeight());
+
 
 //        dPreference.putIntAndCommit("image_Resolution_Ratio.width", appPara.getImage_Resolution_Ratio().getWidth());
 //        dPreference.putIntAndCommit("image_Resolution_Ratio.height", appPara.getImage_Resolution_Ratio().getHeight());
