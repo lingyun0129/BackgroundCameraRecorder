@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.sth.camerabackgroudrecorder"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -30,5 +30,7 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile 'com.android.support:support-v4:23.2.0'
     compile files('libs/commons-io-2.4.jar')
-    compile(name:'filePickerlibray', ext:'aar')
+    compile(name: 'filePickerlibray', ext: 'aar')
+    compile(name: 'file_browser_view_libray', ext: 'aar')
+    compile(name: 'swipeList', ext: 'aar')
 }

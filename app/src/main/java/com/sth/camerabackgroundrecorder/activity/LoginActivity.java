@@ -151,7 +151,7 @@ public class LoginActivity extends Activity {
         StringBuffer result = new StringBuffer();
         for (int i = 12; i > 0; i-=2) {
             char c = imei.charAt(i);//从第13位开始向前取，共取6位数字作为验证码
-            //Log.i("cai", "转换前的字符" + c);
+            Log.i("cai", "转换前的字符" + c);
             result.append(c);
         }
         Log.i("cai", "转换后的验证码为：" + result.toString());

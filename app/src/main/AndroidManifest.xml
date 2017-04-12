@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.autofocus" />
 
@@ -24,21 +25,23 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:icon"
+
         >
         <activity
             android:name=".activity.MainActivity"
+            android:excludeFromRecents="true"
             android:label="摄像参数设置"
-            android:theme="@style/SiginInDialog"
-            android:excludeFromRecents="true"/>
+            android:theme="@style/SiginInDialog" />
         <activity
             android:name=".activity.LoginActivity"
+            android:excludeFromRecents="true"
             android:label="后台录像机"
-            android:theme="@style/SiginInDialog"
-            android:excludeFromRecents="true"></activity>
+            android:theme="@style/SiginInDialog"></activity>
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,16 +51,23 @@
         <activity
             android:name="ru.bartwell.exfilepicker.ExFilePickerActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/ExFilePickerThemeDark"
-            android:excludeFromRecents="true"/>
+            android:excludeFromRecents="true"
+            android:theme="@style/ExFilePickerThemeDark" />
 
         <service
             android:name=".service.BackgroundWorkService"
             android:enabled="true"
             android:exported="true"></service>
 
-        <activity android:name=".activity.InputPasswordDialogActivity"
-            android:theme="@style/SiginInDialog"
+        <activity
+            android:name=".activity.InputPasswordDialogActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SiginInDialog"></activity>
+        <activity
+            android:name=".activity.LocalFileActivity"
+            android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".activity.SwipeMenuListActivity"
             android:excludeFromRecents="true"></activity>
     </application>
 

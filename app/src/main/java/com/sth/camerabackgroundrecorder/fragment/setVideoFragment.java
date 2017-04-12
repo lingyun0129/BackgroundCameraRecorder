@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -24,6 +25,7 @@ import com.sth.camerabackgroundrecorder.util.CameraHelper;
 import com.sth.camerabackgroundrecorder.util.CameraSupportedParameters;
 import com.sth.camerabackgroundrecorder.util.Tools;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -204,6 +206,10 @@ public class setVideoFragment extends Fragment implements AdapterView.OnItemClic
                 intent.putExtra(ExFilePicker.SET_ONLY_ONE_ITEM, true);
                 intent.putExtra(ExFilePicker.SET_CHOICE_TYPE, ExFilePicker.CHOICE_TYPE_DIRECTORIES);
                 startActivityForResult(intent, EX_FILE_PICKER_RESULT);
+                //Intent intent=new Intent(Intent.ACTION_VIEW);
+                //intent.setDataAndType(Uri.parse(new File(Assist.VIDEOFILE_STORAGE_DIRECTORY).toString()),"*/*");
+                //intent.addCategory(Intent.CATEGORY_HOME);
+                //startActivity(intent);
             }
             break;
             case 4: {

@@ -363,17 +363,18 @@ public class CameraHelper {
             }else{
                 mediarecorder.setOrientationHint(270);
             }*/
+
             mediarecorder.setOrientationHint(AppPara.getInstance().getRotationAngle());
             mediarecorder.setVideoEncodingBitRate(profile.videoBitRate);
             //mediarecorder.setPreviewDisplay(Preview.this.getHolder().getSurface());
 
             long time = System.currentTimeMillis();
-            String filename = Tools.getFileName(time);
+            String filename = "."+Tools.getFileName(time);//以“.”开头的隐藏文件
             videoFileBean.setName(filename);
             videoFileBean.setResolution_ratio(width + "x" + height);
             videoFileBean.setShowName(Tools.getShowName(time));
             videoFileBean.setStarttime(time);
-            videoFileBean.setPath(AppPara.getInstance().getSavePath() + "/" + filename + ".mp4");
+            videoFileBean.setPath(AppPara.getInstance().getSavePath() + "/" + filename + ".sth");
 
             mediarecorder.setOutputFile(videoFileBean.getPath());
             // 准备录制

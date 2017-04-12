@@ -17,7 +17,7 @@ import com.sth.camerabackgroundrecorder.util.LineEditText;
 import com.sth.camerabackgroundrecorder.util.Tools;
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private Button start_recording, stop_recording;
+    private Button start_recording, stop_recording,btn_local_file;
     private CameraHelper mCamera = null;
     private boolean mCameraOpenSuccess = false;
     private LineEditText et_password=null;
@@ -38,6 +38,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             start_recording.setEnabled(true);
             stop_recording.setEnabled(false);
         }
+        btn_local_file=(Button)findViewById(R.id.btn_local_file);
+        btn_local_file.setOnClickListener(this);
 /*        if (!Assist.isRecording) {
             mCamera = new CameraHelper(this);
             mCameraOpenSuccess = mCamera.openCamera();
@@ -80,6 +82,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
             finish();
             break;
+            case R.id.btn_local_file: {
+                //Intent intent = new Intent(MainActivity.this, LocalFileActivity.class);
+                Intent intent=new Intent(MainActivity.this,SwipeMenuListActivity.class);
+                startActivity(intent);
+            }
+                break;
             default:
                 break;
         }

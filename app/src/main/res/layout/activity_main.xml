@@ -46,18 +46,26 @@
         >
         <Button
             android:id="@+id/stop_recording"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:text="停止"
             android:background="@drawable/bg"
             />
         <Button
+            android:id="@+id/btn_local_file"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:text="本地文件"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bg"
+            />
+        <Button
             android:id="@+id/start_recording"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:text="开始"
             android:background="@drawable/bg"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             />
     </LinearLayout>
 
